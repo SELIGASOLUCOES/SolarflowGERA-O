@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0891b2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>SolarFlow Sales</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CORES BASEADAS NA IMAGEM (VIVAS) --- */
+        :root {
+            /* Light Mode (Padrão) */
+            --primary: #0891b2;       /* Azul Petróleo Vivo */
+            --primary-hover: #0e7490;
+            --secondary: #fbbf24;     /* Amarelo Mostarda Solar */
+            --secondary-dark: #d97706;
+            --bg-body: #f0f9ff;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --input-bg: #f8fafc;
+            
+            --success: #10b981;
+            --danger: #ef4444;
+            --whatsapp: #25D366;
+            
+            --shadow: 0 10px 15px -3px rgba(8, 145, 178, 0.1), 0 4px 6px -2px rgba(8, 145, 178, 0.05);
+            --radius: 16px;
+        }
+
+        /* Dark Mode Variables */
+        [data-theme="dark"] {
+            --primary: #22d3ee;       /* Azul Neon */
+            --primary-hover: #06b6d4;
+            --secondary: #fcd34d;     /* Amarelo Brilhante */
+            --secondary-dark: #fbbf24;
+            --bg-body: #0f172a;       /* Azul Noturno Profundo */
+            --bg-card: #1e293b;       /* Azul Acinzentado */
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --input-bg: #0f172a;
+            --shadow: none;
+        }
+
+        * { box-sizing: border-box; outline: none; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; padding-bottom: 80px; transition: background 0.3s ease, color 0.3s ease; }
+        
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
+
+        /* HEADER ANIMADO */
+        header {
+            background: var(--bg-card); padding: 20px 25px; border-radius: var(--radius);
+            box-shadow: var(--shadow); border-bottom: 4px solid var(--primary);
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+        .brand { font-size: 1.4rem; font-weight: 900; color: var(--primary); display: flex; gap: 10px; align-items: center; letter-spacing: -0.5px; }
+        .brand i { color: var(--secondary-dark); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* THEME TOGGLE */
+        .theme-btn {
+            background: var(--input-bg); border: 1px solid var(--border); color: var(--text-main);
+            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s; font-size: 1.1rem;
+        }
+        .theme-btn:hover { background: var(--border); }
+
+        .main-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 25px; }
+        @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+        /* CARDS MODERNOS */
+        .card { background: var(--bg-card); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); height: fit-content; border: 1px solid var(--border); transition: 0.3s; }
+        .card-header { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .card-header i { color: var(--secondary-dark); background: rgba(251, 191, 36, 0.2); padding: 8px; border-radius: 8px; }
+
+        /* INPUTS ESTILIZADOS */
+        .form-group { margin-bottom: 15px; }
+        .label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; display: block; }
+        .helper-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 5px; line-height: 1.3; font-weight: 400; opacity: 0.9; }
+        
+        .input-box { position: relative; display: flex; align-items: center; }
+        .form-control {
+            width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 10px;
+            font-size: 1rem; transition: 0.2s; font-family: 'Inter', sans-serif;
+            background: var(--input-bg); color: var(--text-main); font-weight: 500;
+        }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.15); }
+        .form-control[readonly] { opacity: 0.7; cursor: not-allowed; }
+        .unit { position: absolute; right: 15px; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; pointer-events: none; }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        /* BOTÕES VIVOS */
+        .btn { border: none; padding: 16px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; font-size: 1rem; letter-spacing: 0.5px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%); color: #fff; width: 100%; box-shadow: 0 4px 10px rgba(8, 145, 178, 0.3); }
+        .btn-primary:active { transform: scale(0.98); }
+        
+        .btn-icon { width: 52px; padding: 0; flex-shrink: 0; }
+        .btn-gps { background: var(--secondary); color: #000; }
+        .btn-search { background: var(--text-main); color: var(--bg-card); }
+        .btn-sec { background: var(--text-main); color: var(--bg-card); }
+        .btn-wa { background: var(--whatsapp); color: white; }
+
+        /* SLIDERS */
+        .strategy-box { background: rgba(251, 191, 36, 0.1); padding: 15px; border-radius: 12px; border: 1px dashed var(--secondary-dark); margin-bottom: 15px; }
+        .tech-box { background: rgba(8, 145, 178, 0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
+        
+        .range-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; }
+        input[type=range] { width: 100%; height: 6px; border-radius: 5px; appearance: none; outline: none; background: var(--border); }
+        input[type=range]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--primary); cursor: pointer; transition: 0.1s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .strategy-box input[type=range]::-webkit-slider-thumb { background: var(--secondary-dark); }
+
+        /* RESULTADOS COM PAYBACK */
+        .results-wrapper { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .results-wrapper.visible { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .payback-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px;
+            box-shadow: 0 10px 20px -5px rgba(8, 145, 178, 0.4);
+            display: none; /* Começa oculto se opcional não preenchido */
+        }
+        .payback-label { font-size: 0.85rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .payback-val { font-size: 2rem; font-weight: 800; margin: 5px 0; }
+        .payback-cost { font-size: 0.9rem; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; display: inline-block; }
+
+        .kpi-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .kpi { background: var(--input-bg); padding: 15px; border-radius: 12px; border-left: 4px solid var(--secondary); }
+        .kpi-title { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; }
+        .kpi-val { font-size: 1.3rem; font-weight: 800; color: var(--text-main); }
+        .kpi-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+        
+        .cons-comparison { margin: 20px 0; padding: 15px; border: 1px solid var(--border); border-radius: 12px; background: var(--input-bg); }
+        .cons-track { width: 100%; height: 12px; background: var(--border); border-radius: 6px; overflow: hidden; display: flex; margin-top: 8px; }
+        
+        /* BRANDING */
+        details.branding { background: rgba(16, 185, 129, 0.1); border: 1px dashed var(--success); padding: 12px; border-radius: 10px; margin-bottom: 15px; }
+        details.branding summary { cursor: pointer; color: var(--success); font-weight: 700; font-size: 0.9rem; list-style: none; }
+
+        .loader { width: 20px; height: 20px; border: 2px solid #fff; border-bottom-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* INSIGHTS */
+        .insight-item { display: flex; gap: 12px; padding: 12px; background: var(--input-bg); border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .insight-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.85rem; flex-shrink: 0; }
+        .bg-ok { background: var(--success); } 
+        .bg-warn { background: var(--secondary); } 
+        .bg-bad { background: var(--danger); }
+
+        /* LEGAL NOTICE */
+        .legal-box {
+            background: rgba(239, 68, 68, 0.08); 
+            border: 1px solid var(--danger); 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-top: 25px; 
+            font-size: 0.8rem; 
+            color: var(--text-main);
+        }
+        .legal-box strong { color: var(--danger); }
+
+        .signature {
+            font-family: 'Satisfy', cursive, sans-serif;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary);
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        @media print {
+            .no-print, header, .theme-btn { display: none !important; }
+            body { background: white; color: black; }
+            .card { border: 1px solid #ccc; box-shadow: none; }
+            .payback-card { background: #eee; color: black; border: 1px solid black; }
+            .payback-cost { background: #ddd; color: black; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="brand">
+            <i class="fas fa-solar-panel fa-lg"></i>
+            <div>SolarFlow <span>Sales</span></div>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+    </header>
+
+    <div class="main-grid">
+        <!-- ÁREA DE INPUTS -->
+        <div class="card no-print">
+            <div class="card-header"><i class="fas fa-user-tie"></i> Dados de Venda</div>
+            
+            <form onsubmit="event.preventDefault(); calcular();">
+                <details class="branding">
+                    <summary><i class="fas fa-id-badge"></i> Dados do Integrador</summary>
+                    <div style="margin-top:10px;">
+                        <input type="text" id="intName" class="form-control" placeholder="Nome da Empresa / Consultor" style="margin-bottom:5px;" onchange="saveData()">
+                        <div class="helper-text" style="margin-bottom:10px;">Nome que aparecerá na proposta e no WhatsApp.</div>
+
+                        <input type="tel" id="intPhone" class="form-control" placeholder="(00) 00000-0000" oninput="maskPhone(this)" onchange="saveData()">
+                        <div class="helper-text">Seu WhatsApp para o cliente clicar e retornar.</div>
+                    </div>
+                </details>
+
+                <div class="form-group">
+                    <label class="label">Localização do Cliente</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="city" class="form-control" placeholder="Cidade..." onchange="saveData()">
+                        <button type="button" class="btn btn-gps btn-icon" onclick="getGPS()"><i class="fas fa-crosshairs"></i></button>
+                        <button type="button" class="btn btn-search btn-icon" onclick="searchCity()" id="btnSearch">
+                            <i class="fas fa-search" id="icoSearch"></i><div class="loader" id="spin"></div>
+                        </button>
+                    </div>
+                    <div id="status" style="font-size:0.75rem; margin-top:4px; font-weight:600;"></div>
+                    <div class="helper-text">Cidade onde o sistema será instalado para buscar dados climáticos.</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Irradiação (HSP)</label>
+                    <div class="input-box">
+                        <input type="number" id="hsp" class="form-control" readonly placeholder="--" step="0.01">
+                        <span class="unit">kWh/m²</span>
+                    </div>
+                    <div class="helper-text">Média de horas de sol pleno no local (preenchido automaticamente).</div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="form-group">
+                        <label class="label">Consumo (kWh)</label>
+                        <input type="number" id="cons" class="form-control" placeholder="0" required onchange="saveData()">
+                        <div class="helper-text">Média mensal da fatura.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Tarifa (R$)</label>
+                        <input type="text" id="tariff" class="form-control" placeholder="0,95" oninput="maskMoney(this)" required onchange="saveData()">
+                        <div class="helper-text">Valor do kWh c/ impostos.</div>
+                    </div>
+                </div>
+
+                <div class="strategy-box" style="background: rgba(8, 145, 178, 0.05); border-color: var(--primary);">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="label" style="color:var(--primary);">Valor Total do Investimento (R$)</label>
+                        <div class="input-box">
+                            <input type="text" id="costWp" class="form-control" placeholder="Opcional (Ex: 14.900,00)" oninput="maskMoney(this)" style="font-weight:700;">
+                            <span class="unit">R$</span>
+                        </div>
+                        <div class="helper-text">Ex: 15.000,00 (Kit + Instalação) para calcular o Payback.</div>
+                    </div>
+                </div>
+
+                <!-- ORIENTAÇÃO E PERDAS (NOVO) -->
+                <div class="tech-box">
+                    <div class="form-group">
+                        <label class="label">Orientação do Telhado (Azimute)</label>
+                        <select id="azimuth" class="form-control" onchange="autoAdjustLoss()">
+                            <option value="0">Norte (Ideal)</option>
+                            <option value="45">Nordeste / Noroeste</option>
+                            <option value="90">Leste / Oeste</option>
+                            <option value="135">Sudeste / Sudoeste</option>
+                            <option value="180">Sul (Menor Geração)</option>
+                        </select>
+                        <div class="helper-text">Ajusta as perdas baseado na latitude detectada.</div>
+                    </div>
+
+                    <div style="margin-top:10px;">
+                        <div class="range-header"><span>Perda por Orientação</span> <span id="lossOriVal" style="color:var(--danger)">0%</span></div>
+                        <input type="range" id="lossOri" min="0" max="40" value="0" oninput="updSlider('lossOri', 'lossOriVal')">
+                        <div class="helper-text">Ajuste manual se necessário. Norte BR sofre menos com desvios que Sul BR.</div>
+                    </div>
+                </div>
+
+                <!-- NOVO: BALANÇO ENERGÉTICO (Simultaneidade e Taxas) -->
+                <div class="strategy-box" style="border-color: var(--success); background: rgba(16, 185, 129, 0.05);">
+                    <h4 style="font-size:0.85rem; margin-bottom:10px; color:var(--success); font-weight:700;"><i class="fas fa-balance-scale"></i> Balanço Energético (Fio B e ICMS)</h4>
+                    
+                    <div style="margin-bottom:15px;">
+                        <div class="range-header"><span>Consumo Instantâneo (Simultaneidade)</span> <span id="simulVal" style="color:var(--success)">30%</span></div>
+                        <input type="range" id="simultaneity" min="0" max="100" value="30" oninput="updSlider('simultaneity', 'simulVal')">
+                        <div class="helper-text">Energia consumida na hora da geração (não paga taxas). Residencial: ~30%, Comercial: ~70%.</div>
+                    </div>
+
+                    <div>
+                        <div class="range-header"><span>Impostos Fixos na Injeção (%)</span> <span id="gridTaxVal" style="color:var(--danger)">15%</span></div>
+                        <input type="range" id="gridTax" min="0" max="40" value="15" oninput="updSlider('gridTax', 'gridTaxVal')">
+                        <div class="helper-text">ICMS/PIS/COFINS sobre energia injetada. <br><strong style="color:var(--secondary-dark)">O Fio B será calculado progressivamente (escadinha) no Payback.</strong></div>
+                    </div>
+                </div>
+
+                <!-- OVERLOAD (RESTAURADO E VISÍVEL) -->
+                <div class="tech-box">
+                    <div class="range-header">
+                        <span>Overload (FDI)</span> 
+                        <span id="ovVal" style="color:var(--primary); font-weight:700;">30%</span>
+                    </div>
+                    <input type="range" id="overload" min="0" max="70" value="30" oninput="updSlider('overload', 'ovVal')">
+                    <div class="helper-text">Relação Painel/Inversor. >40% pode causar Clipping (Perda por corte de potência).</div>
+                </div>
+
+                <!-- SLIDERS ESTRATÉGICOS -->
+                <details style="margin-bottom:15px; font-size:0.85rem; color:var(--text-muted);">
+                    <summary style="cursor:pointer; margin-bottom:10px;">Projeção de Consumo (Futuro)</summary>
+                    <div class="strategy-box" style="margin-top:10px;">
+                        <div style="margin-bottom:12px;">
+                            <div class="range-header"><span>Conforto (Vício de Uso)</span> <span id="vicioVal" style="color:var(--secondary-dark)">0%</span></div>
+                            <input type="range" id="vicio" min="0" max="50" value="0" oninput="updSlider('vicio', 'vicioVal')">
+                        </div>
+                        <div>
+                            <div class="range-header"><span>Expansão Futura</span> <span id="expVal" style="color:var(--secondary-dark)">0%</span></div>
+                            <input type="range" id="exp" min="0" max="100" value="0" oninput="updSlider('exp', 'expVal')">
+                        </div>
+                    </div>
+                </details>
+
+                <!-- DADOS TECNICOS OCULTAVEIS -->
+                <details style="margin-bottom:20px; font-size:0.85rem; color:var(--text-muted);">
+                    <summary style="cursor:pointer; margin-bottom:10px;">Ajustes Técnicos (Painel, PR)</summary>
+                    <div class="form-group" style="margin-top:10px;">
+                        <label class="label">Potência Painel (Wp)</label>
+                        <input type="number" id="panel" class="form-control" value="550" onchange="saveData()">
+                        <div class="helper-text">Potência individual do módulo fotovoltaico.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Eficiência (PR %)</label>
+                        <input type="number" id="eff" class="form-control" value="80" onchange="saveData()">
+                        <div class="helper-text">Performance Ratio: considera perdas por calor, sujeira e cabos.</div>
+                    </div>
+                </details>
+
+                <button class="btn btn-primary"><i class="fas fa-calculator"></i> Gerar Proposta</button>
+            </form>
+        </div>
+
+        <!-- ÁREA DE RESULTADOS -->
+        <div class="results-wrapper" id="resCard">
+            
+            <!-- PAYBACK CARD (OPCIONAL) -->
+            <div class="payback-card">
+                <div class="payback-label">Retorno do Investimento (Payback)</div>
+                <div class="payback-val" id="resPayback">-- Anos</div>
+                <div class="payback-cost">Investimento Est.: R$ <span id="resTotalCost">0,00</span></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><i class="fas fa-file-invoice-dollar"></i> Viabilidade Financeira</div>
+                
+                <div class="kpi-row">
+                    <div class="kpi">
+                        <div class="kpi-title">Economia Mensal (Ano 1)</div>
+                        <div class="kpi-val" style="color:var(--success)">R$ <span id="resSaveMonth">0,00</span></div>
+                        <div class="kpi-sub">Já descontando Fio B (Regra Atual)</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="kpi-title">Economia Anual (Média)</div>
+                        <div class="kpi-val" style="color:var(--success)">R$ <span id="resSaveYear">0,00</span></div>
+                        <div class="kpi-sub">Considerando progressão Fio B</div>
+                    </div>
+                </div>
+
+                <div class="cons-comparison">
+                    <div class="range-header"><span>Consumo: <span id="txtBase">0</span></span> <span style="color:var(--secondary-dark)">Proj.: <span id="txtProj">0</span> kWh</span></div>
+                    <div class="cons-track">
+                        <div id="barBase" style="height:100%; background:var(--text-muted); width:0%;"></div>
+                        <div id="barExtra" style="height:100%; background:var(--secondary); width:0%;"></div>
+                    </div>
+                </div>
+
+                <div class="kpi-row" style="margin-top:20px;">
+                    <div class="kpi">
+                        <div class="kpi-title">Potência</div>
+                        <div class="kpi-val"><span id="resKwp">0</span> <span style="font-size:0.9rem">kWp</span></div>
+                    </div>
+                    <div class="kpi">
+                        <div class="kpi-title">Placas</div>
+                        <div class="kpi-val" id="resPanels">0</div>
+                    </div>
+                </div>
+
+                <div style="background:var(--input-bg); padding:15px; border-radius:10px; font-size:0.9rem; margin-bottom:20px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Inversor:</span> <strong id="resInv">0 kW</strong></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Geração Média:</span> <strong id="resGen">0 kWh</strong></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Área Telhado:</span> <strong id="resArea">0 m²</strong></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Eficiência (PR):</span> <strong id="resEff">0%</strong></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Overload (FDI):</span> <strong id="resOv">0%</strong></div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="font-size:0.9rem; margin-bottom:10px; color:var(--text-main);">💡 Dicas de Engenharia</h4>
+                    <div id="insights"></div>
+                </div>
+                
+                <!-- AVISO LEGAL MELHORADO -->
+                <div class="legal-box">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <i class="fas fa-exclamation-circle" style="color:var(--danger); font-size:1.1rem;"></i>
+                        <strong>Regra de Transição (Fio B):</strong>
+                    </div>
+                    <p style="margin-bottom:8px; line-height:1.4;">Para novas conexões, a cobrança pelo uso da rede (Fio B) é progressiva ano após ano:</p>
+                    <ul style="padding-left:18px; margin-bottom:10px; list-style-type:disc; line-height:1.4;">
+                        <li><strong>2025:</strong> Paga-se 45% do componente Fio B;</li>
+                        <li><strong>2026:</strong> Sobe para 60%;</li>
+                        <li><strong>2027:</strong> Sobe para 75%;</li>
+                        <li><strong>2028:</strong> Sobe para 90%;</li>
+                        <li><strong>2029 em diante:</strong> Paga-se 100% do Fio B.</li>
+                    </ul>
+                    <p style="line-height:1.4; border-top:1px solid rgba(239,68,68,0.2); padding-top:8px;">
+                        <strong>Nota:</strong> O Payback calculado acima já considera essa "escadinha" de aumento de custos ao longo do tempo para maior precisão.
+                    </p>
+                </div>
+
+                <div class="action-buttons no-print" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:20px;">
+                    <button class="btn btn-sec" onclick="window.print()"><i class="fas fa-print"></i> PDF</button>
+                    <button class="btn btn-wa" onclick="sendWA()"><i class="fab fa-whatsapp"></i> Proposta</button>
+                </div>
+
+                <!-- ASSINATURA (Não sai no PDF) -->
+                <div class="signature no-print">
+                    Desenvolvido por: SolarFlowPro e Eng. Marcos Coelho
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align:center; margin-top:30px; color:var(--text-muted); font-size:0.8rem;" id="copyright">
+        &copy; 2025 SolarFlowPro & Eng. Marcos Coelho
+    </div>
+</div>
+
+<script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(e=>{});
+
+    const API_GEO = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=";
+    const API_REV = "https://nominatim.openstreetmap.org/reverse?format=json";
+    const API_METEO = "https://archive-api.open-meteo.com/v1/archive";
+    const INVERTERS = [1, 1.5, 2, 2.5, 3, 3.6, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 33, 40, 50, 60, 75];
+    let calculated = false;
+    let lat = 0; // Armazena latitude globalmente
+
+    window.onload = () => { 
+        loadData(); 
+        setInterval(() => { if(!document.getElementById('copyright')) document.body.innerHTML = "&copy; 2025 SolarFlowPro & Eng. Marcos Coelho"; }, 5000); 
+    };
+
+    // --- LÓGICA DO FIO B (DINÂMICA) ---
+    function getFioBPct(year) {
+        if(year <= 2022) return 0;
+        if(year === 2023) return 15;
+        if(year === 2024) return 30;
+        if(year === 2025) return 45;
+        if(year === 2026) return 60;
+        if(year === 2027) return 75;
+        if(year === 2028) return 90;
+        return 100; // 2029 em diante
+    }
+
+    // --- MÁSCARAS E FORMATAÇÃO ---
+    function maskPhone(o) {
+        let v = o.value.replace(/\D/g,"");
+        v = v.replace(/^(\d{2})(\d)/g,"($1) $2");
+        v = v.replace(/(\d)(\d{4})$/,"$1-$2");
+        o.value = v.substring(0, 15);
+    }
+    function maskMoney(o) {
+        let v = o.value.replace(/\D/g,"");
+        v = (v/100).toFixed(2) + "";
+        v = v.replace(".", ",");
+        o.value = v;
+    }
+    function parseMoney(val) { 
+        if(!val) return 0;
+        // Robustez: remove pontos de milhar e troca vírgula por ponto
+        let clean = val.replace(/\./g,'').replace(',','.');
+        return parseFloat(clean) || 0; 
+    }
+    function updSlider(id, target) { document.getElementById(target).innerText = document.getElementById(id).value + '%'; if(calculated) calcular(); }
+    
+    // --- LÓGICA DE ORIENTAÇÃO AUTOMÁTICA ---
+    function autoAdjustLoss() {
+        const azim = parseInt(document.getElementById('azimuth').value);
+        let baseLoss = 0;
+        
+        // Perda base teórica por desvio do Norte (Hemisfério Sul)
+        // 0=Norte(0%), 90=Leste/Oeste(~10-15%), 180=Sul(~20-30%)
+        if(azim === 0) baseLoss = 0;
+        else if(azim === 45) baseLoss = 5;
+        else if(azim === 90) baseLoss = 12;
+        else if(azim === 135) baseLoss = 20;
+        else if(azim === 180) baseLoss = 28;
+
+        // Fator de Correção por Latitude
+        // Perto do Equador (Lat 0), a orientação importa muito menos.
+        // No Sul (Lat 30), importa 100%.
+        const latFactor = Math.abs(lat) / 30; // Normaliza: Lat 30 = 1.0, Lat 0 = 0.0
+        
+        // Perda Real = Perda Base * Fator Latitude
+        // Ex: Sul (28%) no Equador (Lat 0) -> 28 * 0 = 0% de perda.
+        // Ex: Sul (28%) em Curitiba (Lat 25) -> 28 * 0.83 = 23% de perda.
+        let finalLoss = Math.round(baseLoss * Math.min(latFactor, 1.2)); // Cap em 1.2x para extremos
+        
+        document.getElementById('lossOri').value = finalLoss;
+        document.getElementById('lossOriVal').innerText = finalLoss + '%';
+        if(calculated) calcular();
+    }
+
+    // --- THEME ---
+    function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        html.setAttribute('data-theme', next);
+        document.querySelector('.theme-btn i').className = next === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+
+    // --- STORAGE ---
+    function saveData() {
+        localStorage.setItem("sf_name", document.getElementById("intName").value);
+        localStorage.setItem("sf_phone", document.getElementById("intPhone").value);
+        localStorage.setItem("sf_city", document.getElementById("city").value);
+        localStorage.setItem("sf_cons", document.getElementById("cons").value);
+        localStorage.setItem("sf_tariff", document.getElementById("tariff").value);
+        localStorage.setItem("sf_panel", document.getElementById("panel").value);
+        localStorage.setItem("sf_eff", document.getElementById("eff").value);
+    }
+    function loadData() {
+        if(localStorage.getItem("sf_name")) document.getElementById("intName").value = localStorage.getItem("sf_name");
+        if(localStorage.getItem("sf_phone")) document.getElementById("intPhone").value = localStorage.getItem("sf_phone");
+        if(localStorage.getItem("sf_city")) document.getElementById("city").value = localStorage.getItem("sf_city");
+        if(localStorage.getItem("sf_cons")) document.getElementById("cons").value = localStorage.getItem("sf_cons");
+        if(localStorage.getItem("sf_tariff")) document.getElementById("tariff").value = localStorage.getItem("sf_tariff");
+        if(localStorage.getItem("sf_panel")) document.getElementById("panel").value = localStorage.getItem("sf_panel");
+        if(localStorage.getItem("sf_eff")) document.getElementById("eff").value = localStorage.getItem("sf_eff");
+    }
+
+    // --- GEO ---
+    async function searchCity() {
+        const city = document.getElementById('city').value;
+        if(!city) return msg("Digite a cidade!", "red");
+        loader(true);
+        try {
+            const r = await fetch(API_GEO + encodeURIComponent(city));
+            const d = await r.json();
+            if(!d.length) throw new Error("404");
+            setGeo(d[0].lat, d[0].lon, d[0].display_name);
+        } catch(e) { msg("Não encontrado.", "red"); manualHsp(); } 
+        finally { loader(false); }
+    }
+    function getGPS() {
+        if(!navigator.geolocation) return msg("Sem GPS", "red");
+        loader(true);
+        navigator.geolocation.getCurrentPosition(async p => {
+            try {
+                const {latitude, longitude} = p.coords;
+                const r = await fetch(`${API_REV}&lat=${latitude}&lon=${longitude}`);
+                const d = await r.json();
+                let name = d.address.city || d.address.town || "GPS Local";
+                if(d.address.state) name += ` - ${d.address.state}`;
+                setGeo(latitude, longitude, name);
+            } catch(e) { manualHsp(); }
+            finally { loader(false); }
+        }, () => { loader(false); msg("GPS Bloqueado", "red"); manualHsp(); });
+    }
+    async function setGeo(lt, ln, name) {
+        lat = parseFloat(lt); // Salva para o insight e cálculo de orientação
+        document.getElementById('city').value = name.split(',')[0] + " - " + (name.split(',')[1]||"").trim();
+        msg("Buscando dados...", "var(--secondary-dark)");
+        const yr = new Date().getFullYear() - 1;
+        const u = `${API_METEO}?latitude=${lt}&longitude=${ln}&start_date=${yr}-01-01&end_date=${yr}-12-31&daily=shortwave_radiation_sum&timezone=auto`;
+        try {
+            const r = await fetch(u); const d = await r.json();
+            const sum = d.daily.shortwave_radiation_sum.reduce((a,b)=>a+b,0);
+            const hsp = ((sum/d.daily.shortwave_radiation_sum.length)/3.6).toFixed(2);
+            document.getElementById('hsp').value = hsp;
+            msg("HSP: " + hsp, "var(--success)");
+            saveData();
+            autoAdjustLoss(); // Recalcula perda de orientação com nova latitude
+            if(calculated) calcular();
+        } catch(e) { manualHsp(); }
+    }
+
+    // --- CORE ---
+    function calcular() {
+        const consBase = parseFloat(document.getElementById('cons').value);
+        const tariff = parseMoney(document.getElementById('tariff').value);
+        const hsp = parseFloat(document.getElementById('hsp').value);
+        const panel = parseFloat(document.getElementById('panel').value);
+        const eff = parseFloat(document.getElementById('eff').value) / 100;
+        const costWp = parseMoney(document.getElementById('costWp').value);
+        
+        const vicio = document.getElementById('vicio').value / 100;
+        const exp = document.getElementById('exp').value / 100;
+        const ovTgt = document.getElementById('overload').value / 100;
+        
+        // Novos Fatores de Perda
+        const lossOri = document.getElementById('lossOri').value / 100;
+        
+        // Configurações do Balanço
+        const simultaneity = document.getElementById('simultaneity').value / 100;
+        const fixedTaxPct = document.getElementById('gridTax').value / 100;
+        const fioBShare = 0.28; 
+
+        if(!consBase || !hsp || !panel || !tariff) return alert("Preencha todos os campos!");
+
+        // 1. Dimensionamento Físico
+        const consFinal = consBase * (1 + vicio) * (1 + exp);
+        // Precisamos gerar mais se houver perdas de orientação
+        const reqKwp = (consFinal/30) / (hsp * eff * (1 - lossOri));
+        const numPan = Math.ceil((reqKwp * 1000) / panel);
+        const realKwp = (numPan * panel) / 1000;
+        
+        // 2. Inversor & Clipping
+        const idealInv = realKwp / (1 + ovTgt);
+        const inv = INVERTERS.reduce((p, c) => Math.abs(c - idealInv) < Math.abs(p - idealInv) ? c : p);
+        const realOv = ((realKwp/inv)-1)*100;
+        
+        // CÁLCULO DE PERDA POR CLIPPING (Simplificado para Vendas)
+        // Overload > 35% começa a perder no pico.
+        let lossClipping = 0;
+        if(realOv > 35) {
+            // Regra de bolso: ~1% de perda para cada 5% de overload acima de 35%
+            lossClipping = (realOv - 35) * 0.2; 
+            if(lossClipping > 15) lossClipping = 15; // Cap de segurança
+            lossClipping = lossClipping / 100;
+        }
+
+        // 3. Geração Mensal Média (Líquida de Perdas)
+        const gen = realKwp * hsp * 30 * eff * (1 - lossOri) * (1 - lossClipping);
+        
+        // 4. CÁLCULO FINANCEIRO - MÊS ATUAL (Para display)
+        const currentYr = new Date().getFullYear();
+        const currentFioBPct = getFioBPct(currentYr) / 100;
+        
+        // Custo da Conta SEM Solar
+        const billWithoutSolar = consFinal * tariff;
+        
+        // Custo da Conta COM Solar (Mês 1)
+        let selfCons = Math.min(gen * simultaneity, consFinal);
+        let injected = Math.max(gen - selfCons, 0);
+        let consumedFromGrid = consFinal - selfCons;
+        let creditsUsed = Math.min(injected, consumedFromGrid);
+        let gridToPayFull = consumedFromGrid - creditsUsed;
+        
+        // Taxa sobre Injeção (Ano Atual)
+        const totalInjectionTaxPct = (fioBShare * currentFioBPct) + fixedTaxPct;
+        
+        const costGridDeficit = gridToPayFull * tariff;
+        const costTaxedInjection = creditsUsed * tariff * totalInjectionTaxPct;
+        const costAvailability = 50 * tariff;
+        
+        let billWithSolar = Math.max(costAvailability, costTaxedInjection) + costGridDeficit;
+        let saveMo = Math.max(billWithoutSolar - billWithSolar, 0);
+        
+        // 5. CÁLCULO DE PAYBACK DINÂMICO (Loop Progressivo)
+        const paybackCard = document.querySelector('.payback-card');
+        const list = document.getElementById('insights');
+        list.innerHTML = "";
+
+        let pbText = "-- Anos";
+        let saveYrAvg = 0;
+
+        if(costWp > 0) {
+            let balance = -costWp; // Saldo começa negativo (Investimento)
+            let monthCount = 0;
+            let totalSavingsAccumulated = 0;
+            
+            // Simula mês a mês até 20 anos (240 meses)
+            while(balance < 0 && monthCount < 240) {
+                let loopYear = currentYr + Math.floor(monthCount / 12);
+                let loopFioBPct = getFioBPct(loopYear) / 100;
+                let loopTaxPct = (fioBShare * loopFioBPct) + fixedTaxPct;
+                let loopCostTaxedInjection = creditsUsed * tariff * loopTaxPct;
+                let loopBillWithSolar = Math.max(costAvailability, loopCostTaxedInjection) + costGridDeficit;
+                let loopSaveMo = Math.max(billWithoutSolar - loopBillWithSolar, 0);
+                
+                balance += loopSaveMo;
+                totalSavingsAccumulated += loopSaveMo;
+                monthCount++;
+            }
+            
+            if(monthCount >= 240) {
+                pbText = "> 20 Anos";
+            } else if(monthCount < 1) {
+                pbText = "Imediato";
+            } else {
+                let y = Math.floor(monthCount / 12);
+                let m = monthCount % 12;
+                pbText = `${y} Anos e ${m} Meses`;
+            }
+            saveYrAvg = (totalSavingsAccumulated / monthCount) * 12;
+
+            setText('resTotalCost', costWp.toLocaleString('pt-BR', {minimumFractionDigits: 2}));
+            setText('resPayback', pbText);
+            paybackCard.style.display = 'block';
+        } else {
+            paybackCard.style.display = 'none';
+        }
+
+        // Render
+        setText('resSaveMonth', saveMo.toLocaleString('pt-BR', {minimumFractionDigits: 2}));
+        let displayYearSave = (costWp > 0) ? saveYrAvg : (saveMo * 12);
+        setText('resSaveYear', displayYearSave.toLocaleString('pt-BR', {minimumFractionDigits: 2}));
+        
+        setText('resKwp', realKwp.toFixed(2).replace('.', ','));
+        setText('resPanels', numPan);
+        setText('resInv', inv.toFixed(1).replace('.', ',') + " kW");
+        setText('resGen', Math.floor(gen));
+        setText('resArea', (numPan * 2.2).toFixed(1));
+        setText('resEff', document.getElementById('eff').value + "%");
+        
+        const ovEl = document.getElementById('resOv');
+        ovEl.innerText = realOv.toFixed(1) + "%";
+        ovEl.style.color = realOv > 50 ? "var(--danger)" : (realOv > 35 ? "var(--warning)" : "var(--success)");
+
+        // Bars
+        setText('txtBase', consBase); setText('txtProj', Math.floor(consFinal));
+        const baseP = (consBase/consFinal)*100;
+        document.getElementById('barBase').style.width = baseP + "%";
+        document.getElementById('barExtra').style.width = (100-baseP) + "%";
+
+        // INSIGHTS
+        // 0. Perdas Técnicas (Clipping e Orientação)
+        if(lossOri > 0 || lossClipping > 0) {
+            let txt = "";
+            if(lossOri > 0) txt += `Perda Orientação: -${(lossOri*100).toFixed(0)}%. `;
+            if(lossClipping > 0) txt += `Perda Clipping (Overload): -${(lossClipping*100).toFixed(1)}%.`;
+            addIns(list, "fas fa-sort-amount-down-alt", "bg-warn", "Perdas Consideradas", txt);
+        }
+
+        // 1. Orientação Ideal
+        const idealFace = (lat < 0) ? "Norte" : "Sul";
+        const tiltVal = Math.abs(lat);
+        const tiltText = tiltVal < 10 ? "10° (Mínimo)" : `${tiltVal.toFixed(0)}°`;
+        
+        addIns(list, "fas fa-compass", "bg-ok", "Instalação Ideal", 
+            `Latitude: ${lat.toFixed(1)}°. Orientação: <b>${idealFace}</b> | Inclinação Sugerida: <b>${tiltText}</b>.`);
+
+        // 2. Overload
+        if(realOv > 50) {
+            addIns(list, "fas fa-exclamation-triangle", "bg-bad", "Overload Crítico", 
+                `FDI de ${realOv.toFixed(0)}% gera perda significativa por clipping.`);
+        } else if(realOv > 30) {
+            addIns(list, "fas fa-cut", "bg-ok", "Dimensionamento Otimizado", 
+                `FDI de ${realOv.toFixed(0)}% garante mais energia nas manhãs/tardes.`);
+        }
+
+        document.getElementById('resCard').classList.add('visible');
+        calculated = true;
+    }
+
+    // UTILS
+    function addIns(to, icon, bg, tit, txt) {
+        to.innerHTML += `<div class="insight-item"><div class="insight-icon ${bg}"><i class="${icon}"></i></div><div><div style="font-weight:700; font-size:0.85rem;">${tit}</div><div style="font-size:0.8rem; color:var(--text-muted);">${txt}</div></div></div>`;
+    }
+
+    function setText(id, val) { document.getElementById(id).innerText = val; }
+    function msg(t, c) { const e=document.getElementById('status'); e.innerText=t; e.style.color=c; }
+    function loader(s) { 
+        document.getElementById('icoSearch').style.display = s?'none':'block'; 
+        document.getElementById('spin').style.display = s?'block':'none';
+    }
+    function manualHsp() { const h = document.getElementById('hsp'); h.removeAttribute('readonly'); h.focus(); h.placeholder="Manual"; }
+
+    function sendWA() {
+        if(!calculated) return alert("Calcule primeiro");
+        const n = document.getElementById('intName').value;
+        const p = document.getElementById('intPhone').value;
+        const phoneClean = p.replace(/\D/g, "");
+        const yr = new Date().getFullYear();
+        
+        const saveMo = document.getElementById('resSaveMonth').innerText;
+        const saveYr = document.getElementById('resSaveYear').innerText;
+        const pb = document.getElementById('resPayback').innerText;
+        const gen = document.getElementById('resGen').innerText;
+        
+        let financialTxt = ``;
+        if(document.getElementById('resTotalCost').innerText !== "0,00") {
+             financialTxt = `📊 *Retorno do Investimento (Dinâmico):*%0A📉 Payback: *${pb}*%0A💰 Economia Média Anual: *R$ ${saveYr}*%0A%0A`;
+        }
+
+        // Link de retorno para o vendedor
+        let contactLink = "";
+        if(phoneClean.length >= 10) {
+            contactLink = `%0A👤 *Consultor:* ${n || "SolarFlow Sales"}%0A📲 *Falar Agora:* https://wa.me/55${phoneClean}`;
+        }
+
+        const txt = `*☀️ Estudo Solar Preliminar*%0A` +
+        `_Simulação Personalizada ${yr}_%0A%0A` +
+        `Olá! Veja como seu imóvel pode gerar a própria energia:%0A%0A` +
+        `⚡ *Sistema Sugerido:* ${document.getElementById('resKwp').innerText} kWp%0A` +
+        `☀️ *Geração Estimada:* ${gen} kWh/mês%0A` +
+        `💸 *Economia Mensal (Ano 1):* R$ ${saveMo}%0A%0A` +
+        financialTxt +
+        `⚠️ *Atenção à Lei 14.300:*%0A` +
+        `Estamos na regra de transição progressiva. O Fio B sobe anualmente até atingir 100% em 2029. Quanto antes instalar, mais você aproveita a transição!%0A` +
+        contactLink + 
+        `%0A%0A_Posso enviar a proposta formal com todos os detalhes?_`;
+        
+        window.open(`https://wa.me/?text=${txt}`, '_blank');
+    }
+</script>
+
+</body>
+</html>
